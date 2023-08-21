@@ -4,6 +4,7 @@ import com.example.spring_thymeleaf.entities.LapTime;
 import com.example.spring_thymeleaf.repo.LapTimeRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -17,8 +18,16 @@ public class LapTimeService {
 
     public List<LapTime> findLapTimes() {
         List<LapTime> lapTimes = lapTimeRepo.findAll();
-        // TODO: Sort and limit to only 5 best times
-        return  lapTimes;
+
+        // Sort laptimes in ascending order based on LapTime value
+        lapTimes.sort(Comparator.comparingDouble(LapTime::getLapTime));
+
+        // Keep only the first 5 best lap times
+        if (lapTimes.size() > 5) {
+            lapTimes = lapTimes.subList(0, 5);
+        }
+
+        return lapTimes;
     }
 
     public LapTime findById(int id) {
